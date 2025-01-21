@@ -105,7 +105,7 @@ fn remove_placeholder_ident_generic_param(item_impl: &mut ItemImpl) {
     item_impl.generics.params = mem::take(&mut item_impl.generics.params)
         .into_iter()
         .filter(|p| {
-            let is_placeholder = placeholder_param(&p).is_some();
+            let is_placeholder = placeholder_param(p).is_some();
             !is_placeholder
         })
         .collect();

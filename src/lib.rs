@@ -1,6 +1,6 @@
 use std::{fmt, mem};
 
-use proc_macro2::{TokenStream, TokenTree};
+use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::{quote, ToTokens};
 use syn::{
     parse::{Parse, ParseStream},
@@ -36,8 +36,7 @@ impl Parse for EnumInlinerInput {
 }
 
 /// Check that the identifier of the impl block is the same as the enum item.
-/// If so, changes the impl block identifier to the enum's one to match spans.
-fn match_identifiers(enum_item: &ItemEnum, item_impl: &mut ItemImpl) -> Result<()> {
+fn match_identifiers(enum_item: &ItemEnum, item_impl: &ItemImpl) -> Result<()> {
     let enum_ident = enum_item.ident.clone();
 
     let Type::Path(self_ty) = &*item_impl.self_ty else {
@@ -57,7 +56,6 @@ fn match_identifiers(enum_item: &ItemEnum, item_impl: &mut ItemImpl) -> Result<(
         return Err(error_at(impl_ident, "must be the same ident as the enum"));
     }
 
-    item_impl.self_ty = parse_quote! { #enum_ident };
     Ok(())
 }
 
@@ -153,7 +151,7 @@ struct PlaceholderReplacer {
 impl VisitMut for PlaceholderReplacer {
     fn visit_ident_mut(&mut self, i: &mut Ident) {
         if *i == self.target_placeholder {
-            *i = self.substitute.clone();
+            *i = replaced_ident(i.span(), self.substitute.clone());
         }
     }
 
@@ -162,7 +160,7 @@ impl VisitMut for PlaceholderReplacer {
             .into_iter()
             .map(|tt| match tt {
                 TokenTree::Ident(ident) if ident == self.target_placeholder => {
-                    TokenTree::from(self.substitute.clone())
+                    TokenTree::from(replaced_ident(ident.span(), self.substitute.clone()))
                 }
                 tt => tt,
             })
@@ -176,7 +174,7 @@ fn expand(input: EnumInlinerInput) -> Result<TokenStream> {
         mut item_impl,
     } = input;
 
-    match_identifiers(&enum_item, &mut item_impl)?;
+    match_identifiers(&enum_item, &item_impl)?;
 
     let placeholder_ident = get_placeholder_param(&item_impl)?.clone();
     remove_placeholder_ident_generic_param(&mut item_impl);
@@ -194,6 +192,11 @@ fn expand(input: EnumInlinerInput) -> Result<TokenStream> {
 
         #item_impl
     })
+}
+
+fn replaced_ident(old_span: Span, mut new: Ident) -> Ident {
+    new.set_span(old_span);
+    new
 }
 
 #[proc_macro]

@@ -18,7 +18,7 @@ enum_inliner::enum_inline!(
     }
 
     impl<const __VARIANT__: ident> Strategy {
-        fn to_s(self) -> String {
+        fn dbg_s(self) -> String {
             format!("{:?}", strategy_impl::__VARIANT__)
         }
     }
@@ -30,7 +30,7 @@ fn compiles() {
 
     let cases = &[(A, "A"), (B, "B"), (C, "C")];
     for (strategy, expected) in cases {
-        let actual = strategy.to_s();
+        let actual = strategy.dbg_s();
         assert_eq!(actual, *expected);
     }
 }

@@ -46,8 +46,29 @@ impl Strategy {
 }
 ```
 
-See the complete code in this [example test].
+See the complete code in this [simple example test].
 
-[example test]: https://github.com/lffg/enum_inliner/blob/main/tests/compiles.rs
+[simple example test]:
+  https://github.com/lffg/enum_inliner/blob/main/tests/compiles.rs
+
+## Use cases
 
 Use cases aren't vast; but sometimes this may come in handy.
+
+One of such use cases is when working with traits that aren't
+object-safe/dyn-safe (cannot be used with `dyn`), but still require dynamic
+dispatch at runtime. In these situations, one can create an enum with variants
+representing each trait implementation, which is used to perform the dispatch
+based on the enum "tags", which can pass through runtime.
+
+## Why a proc macro?
+
+Even though this kind of functionality [can be implemented][decl-impl] using a
+declarative macro, the `macro_rules!` implementation becomes _extremely_
+convoluted. User-level error messages also get degraded.
+
+[decl-impl]: https://gist.github.com/lffg/94cbb0172a035075e29c46f2f1f31908
+
+## License
+
+MIT license.

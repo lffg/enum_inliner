@@ -200,6 +200,7 @@ fn replaced_ident(old_span: Span, mut new: Ident) -> Ident {
 }
 
 #[proc_macro]
+#[doc = include_str!("../README.md")]
 pub fn enum_inline(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as EnumInlinerInput);
 

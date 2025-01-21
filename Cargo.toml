@@ -3,7 +3,7 @@ name = "enum_inliner"
 description = "Define custom code that's inlined for every variant of an enum"
 homepage = "https://github.com/lffg/enum_inliner"
 repository = "https://github.com/lffg/enum_inliner"
-version = "0.0.1-alpha.1"
+version = "0.0.1"
 license = "MIT"
 edition = "2021"
 

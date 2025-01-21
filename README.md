@@ -1,5 +1,8 @@
 # `enum_inliner`
 
+[<img alt="crates.io" src="https://img.shields.io/crates/v/enum_inliner.svg?color=fc8d62&logo=rust&style=for-the-badge" height="20">](https://crates.io/crates/enum_inliner)
+[<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-enum_inliner?labelColor=555555&logo=docs.rs&style=for-the-badge" height="20">](https://docs.rs/enum_inliner)
+
 Takes this:
 
 ```rs
